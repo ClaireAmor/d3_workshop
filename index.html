@@ -1,13 +1,129 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <html>
-<body>
-<div id="chart">
-    <svg></svg>
-</div>
-<script src="c3.js"></script>
-<link type="text/css" href="c3.css"/>
-<script src="https://d3js.org/d3.v3.min.js"></script>
+  <body>
+    <div id="chart">
+      <svg></svg>
+    </div>
 
-</body>
+    <div id="bar">
+      <svg></svg>
+    </div>
+
+    <div id="stacked">
+      <svg></svg>
+    </div>
+
+    <link rel="stylesheet" type="text/css" href="c3-0.7.20/c3.min.css" />
+    <script src="c3-0.7.20/c3.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", (event) => {
+        console.log("1");
+
+        d3.json("/Dataviz/d3_workshop/data/stacked.json").then((data) => {
+
+          let xDataset = [],  yDatasets = [] ;
+
+          let refData = data[0];
+          xDataset = refData.values.map(val => val[0]);
+          console.log(xDataset)
+
+          let ds;
+          for (const d of data) {
+            ds = [d.key, ...d.values.map(v => v[1])];
+            yDatasets.push(ds)
+          }
+
+          generateStacked(xDataset, yDatasets);
+       
+        });
+
+        function generateStacked(xDataset, yDatasets) {
+          let stacked = c3.generate({
+            bindto: "#stacked",
+            data: {
+              x: 'x',
+              columns: [['x', ...xDataset], ...yDatasets],
+              type: "area",
+              groups:[yDatasets.map(ds => ds[0])]
+            },
+            axis: {
+              x: {
+                type: 'timeseries',
+                tick: {
+                  format: '%d%m%Y'
+                }
+              }
+            }
+          });
+        }
+
+        //A partir des données pie.json, générer différents types de graphiques standards
+        // let chart = c3.generate({
+        //   bindto: "#chart",
+        //   data: {
+        //     columns: [
+        //       ["Un", 29.765957771107],
+        //       ["Deux", 0],
+        //       ["Trois", 32.807804682612],
+        //       ["Quatre", 196.45946739256],
+        //       ["Cinq", 0.19434030906893],
+        //       ["Six", 98.079782601442],
+        //       ["Sept", 29.765957771107],
+        //       ["Huit", 5.1387322875705],
+        //     ],
+        //     type: "pie",
+        //   },
+        // });
+        // let bar = c3.generate({
+        //   bindto: "#bar",
+        //   data: {
+        //     columns: [
+        //       ["Un", 29.765957771107],
+        //       ["Deux", 0],
+        //       ["Trois", 32.807804682612],
+        //       ["Quatre", 196.45946739256],
+        //       ["Cinq", 0.19434030906893],
+        //       ["Six", 98.079782601442],
+        //       ["Sept", 29.765957771107],
+        //       ["Huit", 5.1387322875705],
+        //     ],
+        //     type: "bar",
+        //   },
+        // });
+      });
+      //A partir des données stacked.json, générer un graphique avec courbes cumulées
+
+
+
+
+      //A VOIR PLUS TARD
+      // let tableauData = [];
+          // let tableauColumn = [];
+          // data.forEach((obj) => {
+          //   //console.log(obj)
+          //   Object.values(obj).forEach((key, index, value) => {
+          //    //console.log(value[1])
+          //    tableauColumn.push(key);
+          //    value[1].forEach((val) => {
+          //      tableauColumn.push(val[1]);
+          //    });
+
+          //   });
+          //   tableauData.push(tableauColumn);
+
+          // });
+          // console.log(tableauData)
+
+          // let stacked = c3.generate({
+          //   bindto: "#stacked",
+          //   data: {
+          //     columns: tableauData,
+          //     type: "area",
+          //   },
+          // });
+    </script>
+  </body>
 </html>
+
